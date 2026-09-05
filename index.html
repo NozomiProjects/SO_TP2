@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TP N° 2: Administración de Procesos, Hilos y Planificación de CPU | TSO - UNJu FI</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- SortableJS para Drag & Drop fluido y táctil -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <!-- Canvas Confetti para gamificación al 100% -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <div class="container">
+    <!-- ==================== HEADER HERO ==================== -->
+    <header class="header-hero">
+      <div class="header-meta">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <span class="badge-tag green">🎓 UNJu — Facultad de Ingeniería</span>
+          <span class="badge-tag purple">Ingeniería Informática / Lic. en Sistemas</span>
+          <span class="badge-tag">Ciclo Lectivo 2026</span>
+        </div>
+        <button id="theme-toggle-btn" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;">🌓 Tema</button>
+      </div>
+
+      <h1 class="main-title">Trabajo Práctico N° 2: Administración de Procesos, Hilos y Planificación de CPU</h1>
+      <p class="subtitle">Ciclo de Vida de Procesos, Modelos de 7 Estados, BCP, Hilos, IPC y Algoritmos de Planificación con Simuladores Interactivos</p>
+
+      <div class="academic-info">
+        <div><strong>Cátedra:</strong> Teoría de Sistemas Operativos (TSO)</div>
+        <div><strong>Responsable de Cátedra:</strong> Ing. María Fernanda Vázquez</div>
+        <div><strong>Jefe de Trabajos Prácticos:</strong> Ing. Fabio D. Argañaraz</div>
+        <div><strong>Modalidad:</strong> Individual — Autoevaluativo + Exportación JSON para Git / Classmoji</div>
+      </div>
+    </header>
+
+    <!-- ==================== STICKY TOOLBAR ==================== -->
+    <div class="sticky-toolbar">
+      <div class="progress-container">
+        <div class="progress-labels">
+          <span>Progreso del TP</span>
+          <span id="progress-percentage">0% (0/10 completados)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="btn btn-outline-amber" id="btn-open-biblio-all">📚 Guía Bibliográfica</button>
+        <button class="btn btn-secondary" id="btn-import-json">📥 Importar JSON</button>
+        <button class="btn btn-outline-blue" id="btn-git-guide">🚀 Guía Git / GitHub</button>
+        <button class="btn btn-primary" id="btn-export-json" disabled>💾 Exportar Respuestas (.json)</button>
+      </div>
+    </div>
+
+    <!-- ==================== DATOS DEL ESTUDIANTE ==================== -->
+    <section class="card student-card">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Identificación de Entrega</span>
+          <h2 class="exercise-title">Datos del Estudiante (Trabajo Individual)</h2>
+        </div>
+        <span class="badge-tag">Obligatorio</span>
+      </div>
+      <p class="exercise-instruction">
+        Ingresa tus datos personales para asociar el archivo <code>respuestas_tp2.json</code> a tu repositorio de entregas.
+      </p>
+
+      <div class="student-grid">
+        <div class="form-group">
+          <label for="student-name">Nombre y Apellido *</label>
+          <input type="text" id="student-name" class="form-control" placeholder="Ej: Lucas González">
+        </div>
+        <div class="form-group">
+          <label for="student-dni">DNI / N° de Legajo *</label>
+          <input type="text" id="student-dni" class="form-control" placeholder="Ej: 42123456">
+        </div>
+        <div class="form-group">
+          <label for="student-career">Carrera / Comisión *</label>
+          <input type="text" id="student-career" class="form-control" placeholder="Ej: Ingeniería Informática - Comisión 1">
+        </div>
+        <div class="form-group">
+          <label for="student-github">Usuario de GitHub *</label>
+          <input type="text" id="student-github" class="form-control" placeholder="Ej: lucasgonzalez-unju">
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EJERCICIO 1 ==================== -->
+    <section class="card" id="card-ej1">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 01 (10 pts)</span>
+          <h2 class="exercise-title">Anatomía de la Memoria de un Proceso (Text, Data, Heap, Stack)</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej1">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 3.1 <em>Concepto de Proceso: La Memoria de un Proceso</em> (pp. 82-84).<br>
+          <strong>Carretero et al.:</strong> Cap. 3.1 <em>Estructura y Espacio de Direcciones del Proceso</em>.<br>
+          <strong>Tanenbaum:</strong> Cap. 2.1 <em>Procesos: Modelo de Proceso</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slide 4: Texto, Datos, Heap y Pila).
+        </div>
+      </div>
+
+      <p class="exercise-instruction">
+        Clasifica cada uno de los siguientes elementos del espacio de direcciones en el segmento de memoria que le corresponde (<strong>TEXT</strong>: Código ejecutable, <strong>DATA</strong>: Variables globales/estáticas, <strong>HEAP</strong>: Memoria dinámica, <strong>STACK</strong>: Pila de ejecución y variables locales):
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Elemento del Programa / Contexto</th>
+            <th style="width: 260px;">Segmento Asignado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Código binario compilado de las funciones del programa (instrucciones de máquina)</td>
+            <td>
+              <select class="form-control ej1-select" data-item="seg_instrucciones">
+                <option value="">-- Seleccionar --</option>
+                <option value="TEXT">TEXT (Sección de Texto/Código)</option>
+                <option value="DATA">DATA (Sección de Datos)</option>
+                <option value="HEAP">HEAP (Montículo Dinámico)</option>
+                <option value="STACK">STACK (Pila de Ejecución)</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>2. Variables globales inicializadas (ej: <code>int max_users = 100;</code>)</td>
+            <td>
+              <select class="form-control ej1-select" data-item="seg_globales_inicializadas">
+                <option value="">-- Seleccionar --</option>
+                <option value="HEAP">HEAP (Montículo Dinámico)</option>
+                <option value="TEXT">TEXT (Sección de Texto/Código)</option>
+                <option value="DATA">DATA (Sección de Datos)</option>
+                <option value="STACK">STACK (Pila de Ejecución)</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>3. Memoria solicitada dinámicamente en tiempo de ejecución con <code>malloc()</code> o <code>new</code></td>
+            <td>
+              <select class="form-control ej1-select" data-item="seg_variables_dinamicas">
+                <option value="">-- Seleccionar --</option>
+                <option value="DATA">DATA (Sección de Datos)</option>
+                <option value="HEAP">HEAP (Montículo Dinámico)</option>
+                <option value="STACK">STACK (Pila de Ejecución)</option>
+                <option value="TEXT">TEXT (Sección de Texto/Código)</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>4. Variables locales, parámetros y direcciones de retorno de subrutinas</td>
+            <td>
+              <select class="form-control ej1-select" data-item="seg_marcos_pila">
+                <option value="">-- Seleccionar --</option>
+                <option value="TEXT">TEXT (Sección de Texto/Código)</option>
+                <option value="STACK">STACK (Pila de Ejecución)</option>
+                <option value="DATA">DATA (Sección de Datos)</option>
+                <option value="HEAP">HEAP (Montículo Dinámico)</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>5. Variables globales y estáticas no inicializadas (bloque BSS)</td>
+            <td>
+              <select class="form-control ej1-select" data-item="seg_bss">
+                <option value="">-- Seleccionar --</option>
+                <option value="STACK">STACK (Pila de Ejecución)</option>
+                <option value="HEAP">HEAP (Montículo Dinámico)</option>
+                <option value="DATA">DATA (Sección de Datos / BSS)</option>
+                <option value="TEXT">TEXT (Sección de Texto/Código)</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==================== EJERCICIO 2 ==================== -->
+    <section class="card" id="card-ej2">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 02 (10 pts)</span>
+          <h2 class="exercise-title">Programa (Entidad Pasiva) vs. Proceso (Entidad Activa)</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej2">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 3.1 <em>El Proceso: Diferencia entre Programa y Proceso</em>.<br>
+          <strong>Stallings:</strong> Cap. 3.1 <em>¿Qué es un Proceso? Entidad Activa vs Entidad Pasiva</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slides 3, 6: El concepto de proceso).
+        </div>
+      </div>
+
+      <p class="exercise-instruction">
+        Utiliza los switches segmentados para clasificar cada afirmación técnica como característica exclusiva de un <strong>PROGRAMA</strong> o de un <strong>PROCESO</strong>:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Propiedad o Característica Técnica</th>
+            <th style="width: 240px; text-align: center;">Clasificación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Reside de forma permanente en almacenamiento secundario (disco rígido / SSD) como archivo binario</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="prop_almacenamiento">
+                <button type="button" class="toggle-btn" data-val="PROGRAMA">PROGRAMA</button>
+                <button type="button" class="toggle-btn" data-val="PROCESO">PROCESO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Posee un Program Counter (PC) activo que avanza cíclicamente con los pulsos de reloj de la CPU</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="prop_contador_programa">
+                <button type="button" class="toggle-btn" data-val="PROGRAMA">PROGRAMA</button>
+                <button type="button" class="toggle-btn" data-val="PROCESO">PROCESO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Es identificado unívocamente por el SO mediante un PID y una entrada activa en la tabla del kernel</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="prop_identificador_pid">
+                <button type="button" class="toggle-btn" data-val="PROGRAMA">PROGRAMA</button>
+                <button type="button" class="toggle-btn" data-val="PROCESO">PROCESO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Un único binario en disco puede dar origen a múltiples instancias independientes en ejecución simultánea</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="prop_instancias_multiples">
+                <button type="button" class="toggle-btn" data-val="PROGRAMA">PROGRAMA</button>
+                <button type="button" class="toggle-btn" data-val="PROCESO">PROCESO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Varía dinámicamente su estado a lo largo del tiempo (Nuevo, Listo, Ejecución, Bloqueado)</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="prop_estado_cambiante">
+                <button type="button" class="toggle-btn" data-val="PROGRAMA">PROGRAMA</button>
+                <button type="button" class="toggle-btn" data-val="PROCESO">PROCESO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Conjunto inerte de instrucciones que no consume ciclos de procesador por sí mismo</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="prop_pasividad">
+                <button type="button" class="toggle-btn" data-val="PROGRAMA">PROGRAMA</button>
+                <button type="button" class="toggle-btn" data-val="PROCESO">PROCESO</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==================== EJERCICIO 3 ==================== -->
+    <section class="card" id="card-ej3">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 03 (10 pts)</span>
+          <h2 class="exercise-title">Evolución de los Modelos de Estados (2, 3 y 5 Estados)</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej3">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Stallings:</strong> Cap. 3.2 <em>Estados de los Procesos: Modelo de dos estados y modelo de cinco estados</em>.<br>
+          <strong>Carretero et al.:</strong> Cap. 3.2 <em>Estados del Proceso y Transiciones</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slides 7, 8, 9: Modelos de 2, 3 y 5 estados).
+        </div>
+      </div>
+
+      <p class="exercise-instruction">
+        Selecciona la justificación teórica precisa para cada etapa evolutiva del modelo de estados de un proceso:
+      </p>
+
+      <div style="display: grid; gap: 16px;">
+        <div class="form-group">
+          <label>1. ¿Cuál es la principal desventaja técnica del Modelo de 2 Estados (Ejecutando / No Ejecutando)?</label>
+          <select class="form-control ej3-select" data-item="limitacion_2_estados">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_incompatible_64bit">No permite ejecutar aplicaciones en procesadores con arquitectura de 64 bits</option>
+            <option value="opt_no_distingue_io">No diferencia entre procesos listos para ejecutar y procesos detenidos esperando E/S</option>
+            <option value="opt_consumo_excesivo_ram">Obliga a que todos los procesos residan simultáneamente en memoria ROM</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>2. ¿Cómo se resolvió dicha limitación al concebir el Modelo de 3 Estados?</label>
+          <select class="form-control ej3-select" data-item="solucion_3_estados">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_agrego_bloqueado">Se incorporó el estado Bloqueado para desacoplar las esperas de E/S de la cola de listos</option>
+            <option value="opt_elimino_la_cola">Se eliminaron las colas de espera ejecutando directamente los procesos en disco</option>
+            <option value="opt_reinicio_hardware">Se ordenó reiniciar el microprocesador ante cada solicitud de periférico</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>3. En el Modelo de 5 Estados, ¿cuál es el propósito primordial del estado "Nuevo"?</label>
+          <select class="form-control ej3-select" data-item="proposito_nuevo">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_compilar_codigo">Ejecutar el compilador de C y enlazar las librerías dinámicas del sistema</option>
+            <option value="opt_control_admision">Controlar el grado de multiprogramación admitiendo procesos según memoria y recursos disponibles</option>
+            <option value="opt_asignar_ip">Asignar una dirección IP estática en la placa de red del equipo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>4. En el Modelo de 5 Estados, ¿por qué es indispensable el estado "Terminado"?</label>
+          <select class="form-control ej3-select" data-item="proposito_terminado">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_liberacion_recursos">Permitir que el SO recupere memoria y recursos mientras el padre consulta el código de salida</option>
+            <option value="opt_guardar_en_rom">Almacenar permanentemente el código fuente del programa en el chip BIOS/UEFI</option>
+            <option value="opt_bloquear_el_teclado">Desconectar los controladores USB para prevenir intrusiones de red</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EJERCICIO 4: SIMULADOR A ==================== -->
+    <section class="card" id="card-ej4">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 04 (10 pts)</span>
+          <h2 class="exercise-title">Simulador Interactivo: Modelo de 7 Estados y Swapping</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej4">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Stallings:</strong> Cap. 3.2 <em>Procesos Suspendidos: Modelos de seis y siete estados</em>.<br>
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 3.2 <em>Planificación de Procesos: Colas de Planificación y Swapping</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slides 10, 11: Modelo de 6 y 7 estados y estados inactivos en disco).
+        </div>
+      </div>
+
+      <!-- WIDGET SIMULADOR A -->
+      <div class="state-sim-container">
+        <div class="sim-header">
+          <h3 style="font-size: 1.05rem; color: var(--text-primary);">🎮 Laboratorio Interactivo: Máquina de 7 Estados & Swapping</h3>
+          <span class="badge-tag amber">Simulador en Vivo</span>
+        </div>
+        <p style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 14px;">
+          Dispara los eventos del kernel para guiar el proceso de prueba (PID 1042) a través de sus transiciones. Observa cómo se ilumina el nodo activo en el autómata y cómo se actualiza el PCB.
+        </p>
+
+        <!-- SVG AUTÓMATA DE 7 ESTADOS -->
+        <div class="state-svg-wrapper">
+          <svg viewBox="0 0 920 340" width="100%" height="340" id="state-machine-svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8b949e" />
+              </marker>
+              <marker id="arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#58a6ff" />
+              </marker>
+            </defs>
+
+            <!-- Zonas de Fondo: RAM vs SWAP -->
+            <rect x="10" y="10" width="900" height="190" rx="12" fill="rgba(56, 139, 253, 0.03)" stroke="rgba(56, 139, 253, 0.2)" stroke-dasharray="4" />
+            <text x="30" y="32" fill="#58a6ff" font-size="12" font-weight="700">ESTADOS ACTIVOS (MEMORIA PRINCIPAL / RAM)</text>
+
+            <rect x="10" y="215" width="900" height="115" rx="12" fill="rgba(137, 87, 229, 0.03)" stroke="rgba(137, 87, 229, 0.2)" stroke-dasharray="4" />
+            <text x="30" y="235" fill="#a371f7" font-size="12" font-weight="700">ESTADOS INACTIVOS (MEMORIA SECUNDARIA / SWAP EN DISCO)</text>
+
+            <!-- Aristas / Transiciones -->
+            <!-- Nuevo -> Listo -->
+            <path d="M 120 110 L 220 110" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="145" y="102" fill="#8b949e" font-size="10">Admitir</text>
+
+            <!-- Listo -> Ejecución -->
+            <path d="M 330 95 L 450 95" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="360" y="88" fill="#8b949e" font-size="10">Despachar</text>
+
+            <!-- Ejecución -> Listo (Fin Quantum) -->
+            <path d="M 450 125 L 330 125" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="360" y="140" fill="#8b949e" font-size="10">Fin Quantum</text>
+
+            <!-- Ejecución -> Bloqueado -->
+            <path d="M 560 110 L 670 110" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="590" y="102" fill="#8b949e" font-size="10">Espera E/S</text>
+
+            <!-- Bloqueado -> Listo -->
+            <path d="M 725 80 Q 530 35 300 80" fill="none" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="500" y="52" fill="#8b949e" font-size="10">Fin de E/S</text>
+
+            <!-- Ejecución -> Terminado -->
+            <path d="M 510 80 Q 510 50 780 50 L 780 78" fill="none" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="620" y="44" fill="#8b949e" font-size="10">Liberar (Exit)</text>
+
+            <!-- Bloqueado -> Bloqueado Suspendido (Suspender) -->
+            <path d="M 730 140 L 730 245" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="736" y="195" fill="#8b949e" font-size="10">Suspender</text>
+
+            <!-- Bloqueado Suspendido -> Bloqueado (Reanudar) -->
+            <path d="M 710 245 L 710 140" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="655" y="195" fill="#8b949e" font-size="10">Reanudar</text>
+
+            <!-- Bloqueado Suspendido -> Listo Suspendido (Fin E/S en Swap) -->
+            <path d="M 670 275 L 340 275" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="470" y="268" fill="#8b949e" font-size="10">Ocurre Suceso / Fin E/S</text>
+
+            <!-- Listo -> Listo Suspendido (Suspender) -->
+            <path d="M 260 140 L 260 245" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="200" y="195" fill="#8b949e" font-size="10">Suspender</text>
+
+            <!-- Listo Suspendido -> Listo (Activar / Reanudar) -->
+            <path d="M 285 245 L 285 140" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="290" y="195" fill="#8b949e" font-size="10">Activar / Swap In</text>
+
+            <!-- Nodos de Estados (7 estados) -->
+            <!-- 1. NUEVO -->
+            <g class="state-node" id="node-nuevo" data-state="NUEVO">
+              <rect x="25" y="85" width="95" height="50" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2" />
+              <text x="72" y="115" text-anchor="middle" fill="#f0f6fc" font-size="12">NUEVO</text>
+            </g>
+
+            <!-- 2. LISTO -->
+            <g class="state-node" id="node-listo" data-state="LISTO">
+              <rect x="220" y="85" width="110" height="50" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2" />
+              <text x="275" y="115" text-anchor="middle" fill="#f0f6fc" font-size="12">LISTO (RAM)</text>
+            </g>
+
+            <!-- 3. EJECUCION -->
+            <g class="state-node" id="node-ejecucion" data-state="EJECUCION">
+              <rect x="450" y="85" width="110" height="50" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2" />
+              <text x="505" y="115" text-anchor="middle" fill="#f0f6fc" font-size="12">EJECUCIÓN</text>
+            </g>
+
+            <!-- 4. BLOQUEADO -->
+            <g class="state-node" id="node-bloqueado" data-state="BLOQUEADO">
+              <rect x="670" y="85" width="120" height="50" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2" />
+              <text x="730" y="115" text-anchor="middle" fill="#f0f6fc" font-size="12">BLOQUEADO</text>
+            </g>
+
+            <!-- 5. TERMINADO -->
+            <g class="state-node" id="node-terminado" data-state="TERMINADO">
+              <rect x="740" y="30" width="110" height="40" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2" />
+              <text x="795" y="55" text-anchor="middle" fill="#f0f6fc" font-size="11">TERMINADO</text>
+            </g>
+
+            <!-- 6. LISTO SUSPENDIDO -->
+            <g class="state-node" id="node-listo-suspendido" data-state="LISTO_SUSPENDIDO">
+              <rect x="200" y="250" width="140" height="50" rx="8" fill="#161b22" stroke="#8957e5" stroke-width="2" />
+              <text x="270" y="280" text-anchor="middle" fill="#d2a8ff" font-size="11">LISTO SUSPENDIDO</text>
+            </g>
+
+            <!-- 7. BLOQUEADO SUSPENDIDO -->
+            <g class="state-node" id="node-bloqueado-suspendido" data-state="BLOQUEADO_SUSPENDIDO">
+              <rect x="650" y="250" width="160" height="50" rx="8" fill="#161b22" stroke="#8957e5" stroke-width="2" />
+              <text x="730" y="280" text-anchor="middle" fill="#d2a8ff" font-size="11">BLOQ. SUSPENDIDO</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- BOTONERA DE EVENTOS -->
+        <div class="sim-controls-grid">
+          <button type="button" class="sim-btn-action" id="btn-ev-admit">📥 Admitir a Listo</button>
+          <button type="button" class="sim-btn-action" id="btn-ev-dispatch">⚡ Despachar (CPU)</button>
+          <button type="button" class="sim-btn-action" id="btn-ev-timeout">⏰ Expira Quantum</button>
+          <button type="button" class="sim-btn-action" id="btn-ev-iowait">⏳ Esperar E/S</button>
+          <button type="button" class="sim-btn-action" id="btn-ev-iodone">✅ Concluye E/S</button>
+          <button type="button" class="sim-btn-action" id="btn-ev-swapout">📦 Suspender (Swap Out)</button>
+          <button type="button" class="sim-btn-action" id="btn-ev-swapin">🔄 Reanudar (Swap In)</button>
+          <button type="button" class="sim-btn-action" id="btn-ev-exit">🛑 Terminar Proceso</button>
+          <button type="button" class="sim-btn-action" id="btn-ev-reset" style="border-color: #f85149; color: #f85149;">🔁 Reiniciar</button>
+        </div>
+
+        <!-- PCB INSPECTOR -->
+        <div class="pcb-inspector">
+          <div class="pcb-field"><strong>PID:</strong> <span id="pcb-pid">1042</span></div>
+          <div class="pcb-field"><strong>ESTADO ACTUAL:</strong> <span id="pcb-state" style="color: #58a6ff; font-weight: bold;">NUEVO</span></div>
+          <div class="pcb-field"><strong>UBICACIÓN:</strong> <span id="pcb-location">RAM (Memoria Principal)</span></div>
+          <div class="pcb-field"><strong>PROGRAM COUNTER:</strong> <span id="pcb-pc">0x00400020</span></div>
+          <div class="pcb-field"><strong>REGISTRO RAX:</strong> <span id="pcb-reg">0x00000000</span></div>
+          <div class="pcb-field"><strong>ARCHIVOS ABIERTOS:</strong> <span id="pcb-files">stdin, stdout</span></div>
+        </div>
+        <div class="pcb-log-strip" id="pcb-log-text">
+          [KERNEL] Proceso PID 1042 creado en estado NUEVO. Esperando admisión por el planificador a largo plazo...
+        </div>
+      </div>
+
+      <!-- PREGUNTAS TÉCNICAS SOBRE EL MODELO DE 7 ESTADOS -->
+      <p class="exercise-instruction">
+        Basándote en la teoría y en tu interacción con el simulador, responde las siguientes transiciones formales:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Evento o Situación en el Sistema</th>
+            <th style="width: 280px;">Estado Resultante</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. ¿A qué estado transita un proceso en 'Ejecución' cuando finaliza su cuantum de tiempo de CPU?</td>
+            <td>
+              <select class="form-control ej4-select" data-item="trans_quantum_expira">
+                <option value="">-- Seleccionar --</option>
+                <option value="BLOQUEADO">BLOQUEADO</option>
+                <option value="LISTO">LISTO</option>
+                <option value="LISTO_SUSPENDIDO">LISTO SUSPENDIDO</option>
+                <option value="TERMINADO">TERMINADO</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>2. ¿A qué estado transita un proceso en 'Ejecución' cuando emite una llamada al sistema bloqueante de E/S?</td>
+            <td>
+              <select class="form-control ej4-select" data-item="trans_espera_io">
+                <option value="">-- Seleccionar --</option>
+                <option value="LISTO">LISTO</option>
+                <option value="BLOQUEADO_SUSPENDIDO">BLOQUEADO SUSPENDIDO</option>
+                <option value="BLOQUEADO">BLOQUEADO</option>
+                <option value="NUEVO">NUEVO</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>3. Si la memoria RAM se satura, ¿a qué estado expulsa el Swapper a un proceso que está 'Bloqueado'?</td>
+            <td>
+              <select class="form-control ej4-select" data-item="trans_falta_memoria">
+                <option value="">-- Seleccionar --</option>
+                <option value="LISTO_SUSPENDIDO">LISTO SUSPENDIDO</option>
+                <option value="TERMINADO">TERMINADO</option>
+                <option value="BLOQUEADO_SUSPENDIDO">BLOQUEADO SUSPENDIDO</option>
+                <option value="LISTO">LISTO</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>4. Cuando un proceso en 'Bloqueado Suspendido' concluye su operación de E/S en disco, pasa a:</td>
+            <td>
+              <select class="form-control ej4-select" data-item="trans_io_termina_swap">
+                <option value="">-- Seleccionar --</option>
+                <option value="LISTO">LISTO (RAM)</option>
+                <option value="LISTO_SUSPENDIDO">LISTO SUSPENDIDO (DISCO)</option>
+                <option value="EJECUCION">EJECUCION</option>
+                <option value="BLOQUEADO">BLOQUEADO (RAM)</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>5. Al liberarse memoria física, ¿a qué estado retorna un proceso desde 'Listo Suspendido'?</td>
+            <td>
+              <select class="form-control ej4-select" data-item="trans_swap_in">
+                <option value="">-- Seleccionar --</option>
+                <option value="EJECUCION">EJECUCION DIRECTA</option>
+                <option value="BLOQUEADO">BLOQUEADO</option>
+                <option value="LISTO">LISTO (MEMORIA PRINCIPAL)</option>
+                <option value="NUEVO">NUEVO</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>6. ¿Cuál de las siguientes transiciones directas es INVÁLIDA según las reglas de la cátedra?</td>
+            <td>
+              <select class="form-control ej4-select" data-item="trans_directa_prohibida">
+                <option value="">-- Seleccionar --</option>
+                <option value="EJECUCION_A_LISTO">Ejecución -> Listo (por fin de plazo)</option>
+                <option value="BLOQUEADO_A_EJECUCION">Bloqueado -> Ejecución directo (sin pasar por Listo)</option>
+                <option value="LISTO_A_EJECUCION">Listo -> Ejecución (despachado por scheduler)</option>
+                <option value="EJECUCION_A_BLOQUEADO">Ejecución -> Bloqueado (espera de evento)</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==================== EJERCICIO 5 ==================== -->
+    <section class="card" id="card-ej5">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 05 (10 pts)</span>
+          <h2 class="exercise-title">Bloque de Control de Procesos (BCP / PCB) vs. BCS & Context Switch</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej5">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 3.1 <em>Bloque de Control del Proceso</em> y <em>Cambio de Contexto</em>.<br>
+          <strong>Carretero et al.:</strong> Cap. 3.2 <em>Estructuras de Datos para la Gestión de Procesos (BCP y BCS)</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slide 13: Cambio de Contexto y sobrecarga).
+        </div>
+      </div>
+
+      <p class="exercise-instruction">
+        Parte A: Clasifica los siguientes elementos indicando si pertenecen al <strong>PCB</strong> (exclusivo de cada proceso) o al <strong>BCS</strong> (Bloque de Control del Sistema global del SO):
+      </p>
+
+      <table class="custom-table" style="margin-bottom: 24px;">
+        <thead>
+          <tr>
+            <th>Estructura / Información de Control</th>
+            <th style="width: 240px; text-align: center;">Estructura</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Identificador único de proceso (PID) y UID del usuario propietario</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="card_pid">
+                <button type="button" class="toggle-btn" data-val="PCB">PCB</button>
+                <button type="button" class="toggle-btn" data-val="BCS">BCS</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Valor del Contador de Programa (PC) y registros de la CPU en el cambio de contexto</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="card_program_counter">
+                <button type="button" class="toggle-btn" data-val="PCB">PCB</button>
+                <button type="button" class="toggle-btn" data-val="BCS">BCS</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Tabla global de todos los dispositivos de E/S y drivers instalados en el sistema</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="card_tabla_dispositivos">
+                <button type="button" class="toggle-btn" data-val="PCB">PCB</button>
+                <button type="button" class="toggle-btn" data-val="BCS">BCS</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Punteros a la tabla de páginas, registros base/límite y tamaño asignado de memoria</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="card_limites_memoria">
+                <button type="button" class="toggle-btn" data-val="PCB">PCB</button>
+                <button type="button" class="toggle-btn" data-val="BCS">BCS</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Colas globales de planificación del kernel y estadísticas agregadas de uso del procesador</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="card_cola_global_planif">
+                <button type="button" class="toggle-btn" data-val="PCB">PCB</button>
+                <button type="button" class="toggle-btn" data-val="BCS">BCS</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Tabla de descriptores de archivos abiertos y puertos de red asignados al proceso</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="card_archivos_abiertos_proceso">
+                <button type="button" class="toggle-btn" data-val="PCB">PCB</button>
+                <button type="button" class="toggle-btn" data-val="BCS">BCS</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="exercise-instruction">
+        Parte B: Conceptos fundamentales sobre Context Switch y cardinalidad:
+      </p>
+
+      <div style="display: grid; gap: 16px;">
+        <div class="form-group">
+          <label>1. ¿Qué representa el tiempo invertido por la CPU durante un Cambio de Contexto (Context Switch)?</label>
+          <select class="form-control ej5-select" data-item="concepto_context_switch">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_tiempo_util_usuario">Tiempo productivo en el cual avanza la ejecución del software de usuario</option>
+            <option value="opt_overhead_puro">Sobrecarga de trabajo computacional ociosa (overhead) donde la CPU no ejecuta trabajo útil de usuario</option>
+            <option value="opt_limpieza_disco">Tiempo empleado en formatear la partición de intercambio (swap)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>2. ¿Cuántos Bloques de Control de Procesos (BCP / PCB) existen en el sistema en un instante determinado?</label>
+          <select class="form-control ej5-select" data-item="cantidad_pcb">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_solo_un_pcb">Existe un único PCB central compartido secuencialmente por todos los programas</option>
+            <option value="opt_exacto_un_pcb_por_proceso">Exactamente un PCB por cada proceso existente en el sistema</option>
+            <option value="opt_uno_por_nucleo">Uno por cada núcleo físico de la CPU independientemente de los programas</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EJERCICIO 6 ==================== -->
+    <section class="card" id="card-ej6">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 06 (10 pts)</span>
+          <h2 class="exercise-title">Operaciones POSIX: fork(), exec(), Zombies y Huérfanos</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej6">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 3.3 <em>Operaciones sobre los Procesos: Creación (fork/exec) y Terminación (exit/wait)</em>.<br>
+          <strong>Tanenbaum:</strong> Cap. 2.1 <em>Llamadas al Sistema para la Gestión de Procesos</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slides 14, 15: fork, exec, procesos zombies y procesos huérfanos).
+        </div>
+      </div>
+
+      <p class="exercise-instruction">
+        Selecciona la opción correcta en cada una de las siguientes situaciones de administración de procesos en sistemas tipo Unix/Linux:
+      </p>
+
+      <div style="display: grid; gap: 20px;">
+        <div>
+          <label style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; display: block;">
+            1. En sistemas POSIX, tras ejecutar la llamada al sistema <code>fork()</code>, ¿cuál es el valor de retorno en el proceso padre?
+          </label>
+          <div class="radio-cards-grid" data-group="op_fork_retorno">
+            <div class="radio-card" data-val="opt_pid_hijo">
+              <span class="radio-card-title">El PID del nuevo hijo</span>
+              <span class="radio-card-desc">Retorna el PID del nuevo proceso hijo creado (mientras que en el hijo retorna 0).</span>
+            </div>
+            <div class="radio-card" data-val="opt_cero_ambos">
+              <span class="radio-card-title">Retorna 0 en ambos</span>
+              <span class="radio-card-desc">Retorna 0 tanto al proceso padre como al proceso hijo para indicar éxito.</span>
+            </div>
+            <div class="radio-card" data-val="opt_menos_uno">
+              <span class="radio-card-title">Retorna -1 siempre</span>
+              <span class="radio-card-desc">Retorna un puntero a la memoria del kernel para leer variables.</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; display: block;">
+            2. Al invocar una llamada de la familia <code>exec()</code> (ej: <code>execvp</code>), ¿qué ocurre con el espacio de memoria del proceso?
+          </label>
+          <div class="radio-cards-grid" data-group="op_exec_espacio">
+            <div class="radio-card" data-val="opt_reemplazo_total">
+              <span class="radio-card-title">Sustitución Completa</span>
+              <span class="radio-card-desc">Se sobreescribe por completo el espacio de memoria con el nuevo programa, manteniendo el mismo PID.</span>
+            </div>
+            <div class="radio-card" data-val="opt_crea_segundo_hijo">
+              <span class="radio-card-title">Crea un proceso clon</span>
+              <span class="radio-card-desc">Crea un nuevo proceso en paralelo duplicando la memoria del proceso padre.</span>
+            </div>
+            <div class="radio-card" data-val="opt_ejecuta_en_hilo">
+              <span class="radio-card-title">Ejecución en segundo plano</span>
+              <span class="radio-card-desc">Suspende la CPU y transfiere el binario a memoria secundaria para su análisis.</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; display: block;">
+            3. ¿Qué caracteriza a un proceso en estado "Zombie" en la tabla del sistema operativo?
+          </label>
+          <div class="radio-cards-grid" data-group="fenomeno_zombie">
+            <div class="radio-card" data-val="opt_zombie_def">
+              <span class="radio-card-title">Terminó sin wait() del padre</span>
+              <span class="radio-card-desc">Finalizó su ejecución pero el padre aún no leyó su código de salida con <code>wait()</code>, reteniendo su PCB en la tabla.</span>
+            </div>
+            <div class="radio-card" data-val="opt_bucle_infinito">
+              <span class="radio-card-title">Bucle Infinito</span>
+              <span class="radio-card-desc">Un proceso que no responde al usuario porque cayó en una condición de carrera cíclica.</span>
+            </div>
+            <div class="radio-card" data-val="opt_malware_activo">
+              <span class="radio-card-title">Proceso Corrupto</span>
+              <span class="radio-card-desc">Un ejecutable cuyo archivo original en disco fue borrado mientras estaba en memoria.</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; display: block;">
+            4. ¿Qué ocurre cuando un proceso padre finaliza antes que sus procesos hijos?
+          </label>
+          <div class="radio-cards-grid" data-group="fenomeno_huerfano">
+            <div class="radio-card" data-val="opt_huerfano_init">
+              <span class="radio-card-title">Quedan Huérfanos y son adoptados</span>
+              <span class="radio-card-desc">Los hijos quedan huérfanos y son automáticamente adoptados por <code>init</code> o <code>systemd</code> (PID 1).</span>
+            </div>
+            <div class="radio-card" data-val="opt_mueren_inmediato">
+              <span class="radio-card-title">Eliminación en Cascada</span>
+              <span class="radio-card-desc">El hardware aborta instantáneamente todos los procesos hijos sin permitirles guardar datos.</span>
+            </div>
+            <div class="radio-card" data-val="opt_pasan_a_kernel">
+              <span class="radio-card-title">Promoción a Modo Kernel</span>
+              <span class="radio-card-desc">Los procesos hijos adquieren privilegios de administrador del sistema.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EJERCICIO 7 ==================== -->
+    <section class="card" id="card-ej7">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 07 (10 pts)</span>
+          <h2 class="exercise-title">Hilos (Threads / LWP) vs. Procesos: Recursos Compartidos y Privados</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej7">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 4.1 <em>Visión General de los Hilos</em> (pp. 127-130).<br>
+          <strong>Stallings:</strong> Cap. 4.1 <em>Procesos e Hilos: Multihilo y Recursos Asignados</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slides 17, 18: Hilos de ejecución vs Procesos).
+        </div>
+      </div>
+
+      <p class="exercise-instruction">
+        Cuando un proceso crea múltiples hilos de ejecución, algunos recursos se comparten entre todos ellos y otros son estrictamente privados de cada hilo. Clasifica los siguientes recursos con los switches:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Recurso de Hardware / Estructura de Memoria</th>
+            <th style="width: 260px; text-align: center;">Alcance del Recurso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Espacio de memoria virtual del programa (sección de código Text y Heap)</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="res_espacio_direcciones">
+                <button type="button" class="toggle-btn" data-val="COMPARTIDO">COMPARTIDO</button>
+                <button type="button" class="toggle-btn" data-val="PRIVADO_HILO">PRIVADO HILO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Variables globales y sección de datos estáticos (Data/BSS)</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="res_variables_globales">
+                <button type="button" class="toggle-btn" data-val="COMPARTIDO">COMPARTIDO</button>
+                <button type="button" class="toggle-btn" data-val="PRIVADO_HILO">PRIVADO HILO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Contador de Programa propio (Program Counter / PC) que rastrea la próxima instrucción del hilo</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="res_program_counter">
+                <button type="button" class="toggle-btn" data-val="COMPARTIDO">COMPARTIDO</button>
+                <button type="button" class="toggle-btn" data-val="PRIVADO_HILO">PRIVADO HILO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Conjunto de registros de trabajo de la CPU (estado arquitectónico y banderas de condición)</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="res_registros_cpu">
+                <button type="button" class="toggle-btn" data-val="COMPARTIDO">COMPARTIDO</button>
+                <button type="button" class="toggle-btn" data-val="PRIVADO_HILO">PRIVADO HILO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Pila de ejecución independiente (Stack) para llamadas a funciones y variables locales del hilo</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="res_pila_stack">
+                <button type="button" class="toggle-btn" data-val="COMPARTIDO">COMPARTIDO</button>
+                <button type="button" class="toggle-btn" data-val="PRIVADO_HILO">PRIVADO HILO</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Descriptores de archivos abiertos, conexiones de red y sockets del proceso</td>
+            <td style="text-align: center;">
+              <div class="toggle-group" data-item="res_descriptores_archivos">
+                <button type="button" class="toggle-btn" data-val="COMPARTIDO">COMPARTIDO</button>
+                <button type="button" class="toggle-btn" data-val="PRIVADO_HILO">PRIVADO HILO</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==================== EJERCICIO 8 ==================== -->
+    <section class="card" id="card-ej8">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 08 (10 pts)</span>
+          <h2 class="exercise-title">Mecanismos de Comunicación entre Procesos (IPC)</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej8">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 3.4 <em>Comunicación entre Procesos (Memoria Compartida y Paso de Mensajes)</em>.<br>
+          <strong>Carretero et al.:</strong> Cap. 3.4 <em>Mecanismos de Comunicación e Intercambio de Información</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slides 16, 19: Procesos cooperativos, Tuberías y Memoria Compartida).
+        </div>
+      </div>
+
+      <p class="exercise-instruction">
+        Analiza las propiedades técnicas de los modelos de IPC (Memoria Compartida, Pipes, FIFOs y Sockets):
+      </p>
+
+      <div style="display: grid; gap: 16px;">
+        <div class="form-group">
+          <label>1. ¿Cuál es el mecanismo de IPC que ofrece la máxima velocidad de transferencia al evitar copias de datos al espacio de kernel?</label>
+          <select class="form-control ej8-select" data-item="ipc_velocidad_maxima">
+            <option value="">-- Seleccionar --</option>
+            <option value="SOCKETS">Sockets TCP/IP de red local</option>
+            <option value="SHM">Memoria Compartida (Shared Memory)</option>
+            <option value="PIPES">Tuberías Ordinarias (Pipes)</option>
+            <option value="SIGNALS">Señales asíncronas de POSIX</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>2. Las tuberías anónimas u ordinarias de Unix se caracterizan formalmente por ser:</label>
+          <select class="form-control ej8-select" data-item="ipc_pipes_comunicacion">
+            <option value="">-- Seleccionar --</option>
+            <option value="PIPE_BIDIR_GLOBAL">Bidireccionales y accesibles por cualquier proceso de la red</option>
+            <option value="PIPE_UNIDIR">Unidireccionales y utilizables únicamente entre procesos emparentados (padre-hijo)</option>
+            <option value="PIPE_PERSISTENTE">Permanentes en el disco rígido aun tras apagar el equipo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>3. ¿Qué ventaja sustancial aportan los FIFOs (Named Pipes) respecto a las tuberías ordinarias?</label>
+          <select class="form-control ej8-select" data-item="ipc_pipes_nombrados">
+            <option value="">-- Seleccionar --</option>
+            <option value="FIFO_BIDIR_OR_UNRELATED">Poseen un nombre en el sistema de archivos y permiten comunicar procesos sin relación de parentesco</option>
+            <option value="FIFO_SIN_BUFFER">No utilizan memoria RAM para transmitir información</option>
+            <option value="FIFO_ENCRIPTA">Encriptan automáticamente los mensajes con certificados SSL</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>4. En el modelo de Memoria Compartida, ¿sobre quién recae la responsabilidad de evitar condiciones de carrera (Race Conditions)?</label>
+          <select class="form-control ej8-select" data-item="ipc_sincronizacion">
+            <option value="">-- Seleccionar --</option>
+            <option value="RESP_KERNEL">El núcleo del SO serializa automáticamente todos los accesos sin intervención externa</option>
+            <option value="RESP_APLICACION">El programador de la aplicación utilizando mecanismos de sincronización (semáforos/mutex)</option>
+            <option value="RESP_HARDWARE_DISCO">La controladora DMA del disco rígido mediante interrupciones periódicas</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EJERCICIO 9 ==================== -->
+    <section class="card" id="card-ej9">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 09 (10 pts)</span>
+          <h2 class="exercise-title">Niveles de Planificación y Criterios de Rendimiento</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej9">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 5.1-5.2 <em>Conceptos Básicos y Criterios de Planificación</em>.<br>
+          <strong>Carretero et al.:</strong> Cap. 4.1-4.2 <em>Niveles de Planificación y Criterios de Evaluación</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 4 (Slide 12: Niveles de planificación) y Unidad 5 (Slides 21-23: Criterios de planificación).
+        </div>
+      </div>
+
+      <p class="exercise-instruction">
+        Asocia cada nivel de planificación con su rol exacto, y define las métricas cuantitativas centrales del planificador:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Concepto de Planificación / Métrica</th>
+            <th style="width: 320px;">Definición / Función Técnica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Planificador a Largo Plazo (Job Scheduler)</td>
+            <td>
+              <select class="form-control ej9-select" data-item="sched_largo_plazo">
+                <option value="">-- Seleccionar --</option>
+                <option value="ROL_DISPATCH">Asigna la CPU al proceso listo cada pocos milisegundos</option>
+                <option value="ROL_ADMISION">Determina qué programas del disco son admitidos en memoria principal</option>
+                <option value="ROL_SWAPPING">Expulsa procesos de la RAM a swap para descongestionar el sistema</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>2. Planificador a Medio Plazo (Swapper)</td>
+            <td>
+              <select class="form-control ej9-select" data-item="sched_medio_plazo">
+                <option value="">-- Seleccionar --</option>
+                <option value="ROL_SWAPPING">Extrae temporalmente procesos a disco (swap out) o los reincorpora (swap in)</option>
+                <option value="ROL_ADMISION">Controla la cola de impresión de archivos de usuario</option>
+                <option value="ROL_DISPATCH">Guarda los registros de la CPU en el cambio de contexto</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>3. Planificador a Corto Plazo (CPU Scheduler / Dispatcher)</td>
+            <td>
+              <select class="form-control ej9-select" data-item="sched_corto_plazo">
+                <option value="">-- Seleccionar --</option>
+                <option value="ROL_ADMISION">Decide el porcentaje de memoria virtual en la partición swap</option>
+                <option value="ROL_DISPATCH">Selecciona de la cola de listos qué proceso ocupará la CPU en la siguiente ráfaga</option>
+                <option value="ROL_SWAPPING">Crea los usuarios y contraseñas del sistema operativo</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>4. Tiempo de Retorno (Turnaround Time - T)</td>
+            <td>
+              <select class="form-control ej9-select" data-item="metrica_turnaround">
+                <option value="">-- Seleccionar --</option>
+                <option value="DEF_TURNAROUND">Tiempo total transcurrido desde la presentación del proceso hasta su finalización</option>
+                <option value="DEF_WAITING">Tiempo que el proceso permanece ocioso en el almacenamiento secundario</option>
+                <option value="DEF_RESPONSE">Tiempo entre el envío de un comando y la primera respuesta en pantalla</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>5. Tiempo de Espera (Waiting Time - W)</td>
+            <td>
+              <select class="form-control ej9-select" data-item="metrica_waiting">
+                <option value="">-- Seleccionar --</option>
+                <option value="DEF_RESPONSE">Cantidad de instrucciones ejecutadas por cada pulso de reloj</option>
+                <option value="DEF_WAITING">Suma de los períodos de tiempo que el proceso pasa en la cola de Listos esperando CPU</option>
+                <option value="DEF_TURNAROUND">Tiempo transcurrido mientras el proceso hace lectura de disco</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==================== EJERCICIO 10: SIMULADOR B ==================== -->
+    <section class="card" id="card-ej10">
+      <div class="exercise-header">
+        <div>
+          <span class="exercise-number">Ejercicio 10 (10 pts)</span>
+          <h2 class="exercise-title">Simulador de Planificación de CPU: FCFS, SJF y Round Robin</h2>
+        </div>
+        <span class="badge-tag blue" id="badge-ej10">Pendiente</span>
+      </div>
+
+      <div class="biblio-collapse">
+        <div class="biblio-summary" onclick="toggleBiblio(this)">
+          <span>📖 Dónde estudiar este tema en la bibliografía oficial</span>
+          <span>▼</span>
+        </div>
+        <div class="biblio-content" style="display: none;">
+          <strong>Silberschatz (7ma Ed.):</strong> Cap. 5.3 <em>Algoritmos de Planificación (FCFS, SJF, Round Robin y Prioridades)</em>.<br>
+          <strong>Stallings:</strong> Cap. 9.2 <em>Planificación Uniprocesador: Algoritmos Tradicionales</em>.<br>
+          <strong>Diapositivas Cátedra:</strong> Unidad 5 (Slides 24, 25, 28: FCFS, SJF, Round Robin, efecto convoy y evaluación de algoritmos).
+        </div>
+      </div>
+
+      <!-- WIDGET SIMULADOR B -->
+      <div class="gantt-sim-container">
+        <div class="sim-header">
+          <h3 style="font-size: 1.05rem; color: var(--text-primary);">📊 Laboratorio Interactivo: Cronograma de Gantt y Métricas en Tiempo Real</h3>
+          <span class="badge-tag green">Simulador de CPU</span>
+        </div>
+        <p style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 14px;">
+          Configura el algoritmo de planificación y el cuantum para los procesos del lote: 
+          <strong>P1</strong> (Llegada: 0 ms, Ráfaga: 8 ms), <strong>P2</strong> (Llegada: 0 ms, Ráfaga: 4 ms), <strong>P3</strong> (Llegada: 0 ms, Ráfaga: 2 ms).
+        </p>
+
+        <div class="gantt-controls-row">
+          <div class="form-group" style="min-width: 200px;">
+            <label>Algoritmo:</label>
+            <select id="sim-algo-select" class="form-control">
+              <option value="FCFS">1. FCFS (First-Come, First-Served)</option>
+              <option value="SJF">2. SJF No Apropiativo (Shortest Job First)</option>
+              <option value="RR2">3. Round Robin (Quantum = 2 ms)</option>
+              <option value="RR4">4. Round Robin (Quantum = 4 ms)</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-outline-blue" id="btn-run-gantt" style="margin-top: 22px;">▶ Calcular y Generar Gantt</button>
+        </div>
+
+        <!-- DIAGRAMA DE GANTT -->
+        <div class="gantt-chart-wrapper">
+          <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;">Diagrama de Gantt de Ejecución de la CPU:</div>
+          <div class="gantt-timeline-track" id="gantt-track">
+            <!-- Bloques generados dinámicamente por app.js -->
+          </div>
+          <div class="gantt-ticks" id="gantt-ticks-labels">
+            <!-- Ticks de tiempo generados dinámicamente -->
+          </div>
+        </div>
+
+        <!-- TARJETAS DE MÉTRICAS -->
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-title">Tiempo Espera Promedio (W)</div>
+            <div class="metric-value" id="metric-waiting-val">-- ms</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Tiempo Retorno Promedio (T)</div>
+            <div class="metric-value" id="metric-turnaround-val">-- ms</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Utilización de CPU</div>
+            <div class="metric-value" id="metric-cpu-val">100%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREGUNTAS CONCEPTUALES SOBRE PLANIFICACIÓN -->
+      <p class="exercise-instruction">
+        Responde a las siguientes preguntas conceptuales sobre la evaluación y fenómenos de algoritmos de CPU:
+      </p>
+
+      <div style="display: grid; gap: 16px;">
+        <div class="form-group">
+          <label>1. En el algoritmo FCFS, ¿qué fenómeno adverso ocurre cuando un proceso largo precede a varios procesos cortos en la cola de listos?</label>
+          <select class="form-control ej10-select" data-item="planif_fcfs_problema">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_inversion_prioridad">Inversión de prioridades de hardware</option>
+            <option value="opt_efecto_convoy">El Efecto Convoy, que eleva drásticamente el tiempo de espera promedio de los procesos cortos</option>
+            <option value="opt_corrupcion_pila">Corrupción de la pila de memoria por desbordamiento</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>2. ¿Por qué se demuestra teóricamente que el algoritmo SJF (Shortest Job First) es óptimo?</label>
+          <select class="form-control ej10-select" data-item="planif_sjf_optimo">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_minimo_espera">Garantiza el mínimo tiempo de espera promedio para un conjunto dado de procesos</option>
+            <option value="opt_cero_cambio_contexto">Elimina completamente la necesidad de usar interrupciones de reloj</option>
+            <option value="opt_facil_predecir">Porque cualquier sistema operativo conoce con absoluta certeza el futuro de los procesos</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>3. En Round Robin, si se define un Quantum de tiempo excesivamente diminuto (ej: 0.5 microsegundos):</label>
+          <select class="form-control ej10-select" data-item="planif_rr_quantum">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_exceso_context_switch">El rendimiento se degrada debido a la enorme sobrecarga de cambios de contexto sucesivos</option>
+            <option value="opt_funciona_como_fcfs">El algoritmo se convierte automáticamente en First-Come, First-Served</option>
+            <option value="opt_duplica_velocidad">El microprocesador duplica su frecuencia de reloj automáticamente</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>4. Para evitar la inanición (Starvation) en algoritmos de prioridades o SJF, se implementa la técnica de:</label>
+          <select class="form-control ej10-select" data-item="planif_inanicion_solucion">
+            <option value="">-- Seleccionar --</option>
+            <option value="opt_apagar_el_proceso">Matar el proceso inmediatamente tras 5 segundos de espera</option>
+            <option value="opt_envejecimiento">Envejecimiento (Aging), incrementando gradualmente la prioridad de procesos que esperan mucho tiempo</option>
+            <option value="opt_duplicar_memoria">Duplicar la memoria RAM asignada al proceso</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== MODAL BIBLIOGRAFÍA ==================== -->
+    <div class="modal-overlay" id="modal-biblio">
+      <div class="modal-dialog">
+        <button class="modal-close" onclick="closeModal('modal-biblio')">&times;</button>
+        <h2 style="margin-bottom: 12px; color: var(--text-primary);">📚 Mapa Bibliográfico Oficial por Capítulo</h2>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 20px;">
+          Bibliografía oficial provista por la cátedra en el <strong>Aula Virtual</strong> y diapositivas de la Prof. Ing. María Fernanda Vázquez (Clase 3: Unidades 4 y 5):
+        </p>
+
+        <table class="custom-table" style="font-size: 0.84rem;">
+          <thead>
+            <tr>
+              <th>Tema del TP</th>
+              <th>Silberschatz (7ma Ed.)</th>
+              <th>Carretero et al.</th>
+              <th>Stallings</th>
+              <th>Diapositivas Cátedra</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Memoria de Procesos</strong></td>
+              <td>Cap. 3.1</td>
+              <td>Cap. 3.1</td>
+              <td>Cap. 3.1</td>
+              <td>Unidad 4 (Slide 4)</td>
+            </tr>
+            <tr>
+              <td><strong>Programa vs. Proceso</strong></td>
+              <td>Cap. 3.1</td>
+              <td>Cap. 3.1</td>
+              <td>Cap. 3.1</td>
+              <td>Unidad 4 (Slides 3, 6)</td>
+            </tr>
+            <tr>
+              <td><strong>Modelos de 2, 3 y 5 Estados</strong></td>
+              <td>Cap. 3.1</td>
+              <td>Cap. 3.2</td>
+              <td>Cap. 3.2</td>
+              <td>Unidad 4 (Slides 7-9)</td>
+            </tr>
+            <tr>
+              <td><strong>Modelo de 7 Estados & Swapping</strong></td>
+              <td>Cap. 3.2</td>
+              <td>Cap. 3.2</td>
+              <td>Cap. 3.2</td>
+              <td>Unidad 4 (Slides 10-11)</td>
+            </tr>
+            <tr>
+              <td><strong>PCB, BCS & Context Switch</strong></td>
+              <td>Cap. 3.1</td>
+              <td>Cap. 3.2</td>
+              <td>Cap. 3.3</td>
+              <td>Unidad 4 (Slide 13)</td>
+            </tr>
+            <tr>
+              <td><strong>fork, exec, Zombies y Huérfanos</strong></td>
+              <td>Cap. 3.3</td>
+              <td>Cap. 3.3</td>
+              <td>Cap. 3.4</td>
+              <td>Unidad 4 (Slides 14-15)</td>
+            </tr>
+            <tr>
+              <td><strong>Hilos (Threads) vs Procesos</strong></td>
+              <td>Cap. 4.1-4.2</td>
+              <td>Cap. 3.5</td>
+              <td>Cap. 4.1-4.2</td>
+              <td>Unidad 4 (Slides 17-18)</td>
+            </tr>
+            <tr>
+              <td><strong>Mecanismos de IPC</strong></td>
+              <td>Cap. 3.4-3.6</td>
+              <td>Cap. 3.4</td>
+              <td>Cap. 3.5</td>
+              <td>Unidad 4 (Slides 16, 19)</td>
+            </tr>
+            <tr>
+              <td><strong>Niveles y Criterios de Planificación</strong></td>
+              <td>Cap. 5.1-5.2</td>
+              <td>Cap. 4.1-4.2</td>
+              <td>Cap. 9.1</td>
+              <td>Unidad 5 (Slides 12, 21-23)</td>
+            </tr>
+            <tr>
+              <td><strong>Algoritmos de CPU (FCFS, SJF, RR)</strong></td>
+              <td>Cap. 5.3</td>
+              <td>Cap. 4.3</td>
+              <td>Cap. 9.2</td>
+              <td>Unidad 5 (Slides 24-28)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== MODAL GIT ==================== -->
+    <div class="modal-overlay" id="modal-git">
+      <div class="modal-dialog">
+        <button class="modal-close" onclick="closeModal('modal-git')">&times;</button>
+        <h2 style="margin-bottom: 12px; color: var(--text-primary);">🚀 Guía de Entrega con Git y GitHub</h2>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Sigue estos pasos en tu terminal una vez descargado <code>respuestas_tp2.json</code>:
+        </p>
+
+        <ol style="padding-left: 20px; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.8;">
+          <li>Mueve el archivo <code>respuestas_tp2.json</code> descargado a la raíz de tu carpeta <code>TP2/</code>.</li>
+          <li>Ejecuta el autoevaluador local para verificar tu nota:
+            <pre style="background: #0d1117; padding: 8px 12px; border-radius: 6px; margin: 6px 0; color: #39c5cf; font-family: var(--font-mono);">python autograder_tp2.py respuestas_tp2.json</pre>
+          </li>
+          <li>Registra tus cambios y sube tu entrega a tu repositorio personal:
+            <pre style="background: #0d1117; padding: 8px 12px; border-radius: 6px; margin: 6px 0; color: #39c5cf; font-family: var(--font-mono);">git add respuestas_tp2.json
+git commit -m "Entrega TP2 - [Tu Nombre y Apellido]"
+git push origin main</pre>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Hidden input para importar JSON -->
+    <input type="file" id="file-import-input" accept=".json" style="display: none;">
+
+  </div>
+
+  <!-- Motor de la Aplicación -->
+  <script src="app.js"></script>
+</body>
+</html>

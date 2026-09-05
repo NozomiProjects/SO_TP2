@@ -1,0 +1,128 @@
+{
+  "tp_metadata": {
+    "tp_id": "TSO-2026-TP2",
+    "title": "TP N° 2: Administración de Procesos, Hilos y Planificación de CPU",
+    "catedra": "Teoría de Sistemas Operativos - UNJu Facultad de Ingeniería",
+    "version": "1.0.0"
+  },
+  "security": {
+    "algorithm": "SHA-256 + Salted HMAC",
+    "protected": true,
+    "info": "Las soluciones se encuentran protegidas criptográficamente con Salt institucional."
+  },
+  "max_score": 100,
+  "exercises": {
+    "ej1_segmentos_memoria": {
+      "weight": 10,
+      "feedback": "Un proceso organiza su memoria en 4 secciones: Texto (código ejecutable), Datos (globales y estáticas), Heap (memoria dinámica) y Stack (variables locales y llamadas). Consultar Silberschatz Cap. 3.1, Carretero Cap. 3.1 y Diapositiva U4 Slide 4.",
+      "hashes": {
+        "seg_instrucciones": "ab98e4dce7be4d06b46b07d72fe560b25ad0f4307574bb3a6ec33a013a02578d",
+        "seg_globales_inicializadas": "aec7deb5144a27189cfcc00a7f592002b0244e0ad61c5d08d2c16ae4e94ab2f8",
+        "seg_variables_dinamicas": "9501a797f64fde4f71aa62c35552551f1d089d0ed06ad14ffb41bf8222bec522",
+        "seg_marcos_pila": "d5af63ebf45da417b1a1c88f50964a085bcc11b5eec51a80abfb8e0f8053c57a",
+        "seg_bss": "91f546a357b1b4fe08741b14ca5b8201e727a90e51f3cc944f69900aa860e028"
+      }
+    },
+    "ej2_programa_vs_proceso": {
+      "weight": 10,
+      "feedback": "Un programa es una entidad pasiva almacenada en disco; un proceso es una entidad activa en memoria RAM con Program Counter, registros y recursos asignados. Consultar Silberschatz Cap. 3.1, Stallings Cap. 3.1 y Diapositiva U4 Slide 3.",
+      "hashes": {
+        "prop_almacenamiento": "09e67527074e47459f33fa9349fbd3da8748d91bbb27e9a774b76dbf16766fdc",
+        "prop_contador_programa": "d7a8030586d7fd39165f64d2d965d72ae5fa530208f409bf06a8a6ffd8d3d5d0",
+        "prop_identificador_pid": "3fbfe15a1903f91e1ca1e3cc1e43fcf59aeb4f58936cf520524a571cff44f019",
+        "prop_instancias_multiples": "a913c690241d2b3b5a279b3bbf61b0dc09579219ac15223ba126fafbccdfad81",
+        "prop_estado_cambiante": "788acd990c8e496e8aff61fa824aa49c19bfe7f59b760ea76e1881750bf80912",
+        "prop_pasividad": "ddd69e5ba208fa9dad32e6b0dadf3d01910961927c77acc02697c7d9b1b9a3ed"
+      }
+    },
+    "ej3_modelos_estados_evolucion": {
+      "weight": 10,
+      "feedback": "El modelo de 2 estados no distingue procesos listos de aquellos esperando E/S. Se incorporó Bloqueado (3 estados) y luego Nuevo/Terminado (5 estados) para control de admisión y recolección de código de salida. Consultar Stallings Cap. 3.2 y Diapositiva U4 Slides 7-9.",
+      "hashes": {
+        "limitacion_2_estados": "db4e45e962722b900b360d752f0eb13c4be58c621047d13f2aeedbf7d037cc9e",
+        "solucion_3_estados": "f479ce0dfab9f66312602e67e2ec297f3338b1ef701b33fddb020b9d55ab7a35",
+        "proposito_nuevo": "0aacede6663df3cb65956a4c9780d94de539360be13e635c6109019ae90ded75",
+        "proposito_terminado": "7a2679884f4e698d5c9a2d7e44ff8012ad57f5543ca9a5d2776616d63031980a"
+      }
+    },
+    "ej4_simulador_7_estados": {
+      "weight": 10,
+      "feedback": "El modelo de 7 estados incorpora estados suspendidos en swap. Las transiciones directas Bloqueado -> Ejecución están prohibidas ya que siempre debe intervenir el estado Listo. Consultar Stallings Cap. 3.2 y Diapositiva U4 Slides 10-11.",
+      "hashes": {
+        "trans_quantum_expira": "370852d69fc57fca5e9b8743198927c58d667998b4c9a958a84a2d3a33f253b5",
+        "trans_espera_io": "f981f46b6416f7f21b602a492e113db814133d5b37945aedf8c69314ade2ea2a",
+        "trans_falta_memoria": "1253b4cf656e57f22418ff064358ba97e174a7b5be449b15f7acbac157e7824a",
+        "trans_io_termina_swap": "d1457428c35fe06514172417ad674e897edb623e0610a92b351fef265c82ee94",
+        "trans_swap_in": "45e4287726a15948358b22553b931d8961580b0fc3caeab81c887928b0057b6d",
+        "trans_directa_prohibida": "8cd5675cb6463798b04a5e54cbf631b44b90a546bdd668fbaa027a6dfb7e7852"
+      }
+    },
+    "ej5_pcb_vs_bcs_context_switch": {
+      "weight": 10,
+      "feedback": "El PCB contiene el contexto exclusivo de un proceso (PID, PC, registros, límites). El BCS almacena tablas globales del sistema. El Context Switch es tiempo ocioso (overhead puro). Consultar Silberschatz Cap. 3.1, Carretero Cap. 3.2 y Diapositiva U4 Slide 13.",
+      "hashes": {
+        "card_pid": "cabccfc1f5aacfdf9573f2d81f36e71be7d749d51c8aa2bac8a618652445f217",
+        "card_program_counter": "238035d4cbe0de1370df5a735d94095879b931f10e7b59312e42a9f2bb9ebaec",
+        "card_tabla_dispositivos": "ea0f1d10568408aa45ca4e650d01a991af099185bbdf13f8cdf4b92e6b8da9dd",
+        "card_limites_memoria": "2a4e1933dcb651671347e600f4fc3efa8cff4e1982c58a8784cf83f4c6bb38fb",
+        "card_cola_global_planif": "90bb1a3754c83a9eec6d691aa832a75c1db5506e4e1a0bae969dd4d7c5c6c2bd",
+        "card_archivos_abiertos_proceso": "a86231427ffe1a194a403768caf78ee2d9160802cc89c1d80c03977a42360244",
+        "concepto_context_switch": "d7d34f8e425eb29114571818ec89a5db7050b65fbb520db0408771ebe89427c0",
+        "cantidad_pcb": "cc618b0de7c079f3a016200d0ba053d770492e04eb303958cca0d98f8c42e2c4"
+      }
+    },
+    "ej6_operaciones_procesos": {
+      "weight": 10,
+      "feedback": "fork() clona el proceso retornando el PID del hijo al padre; exec() sustituye el espacio de memoria. Un zombie retiene PCB esperando wait(); un huérfano es adoptado por init/systemd. Consultar Silberschatz Cap. 3.3 y Diapositiva U4 Slides 14-15.",
+      "hashes": {
+        "op_fork_retorno": "0db3d324ce2980eda784d1e55f1e34436829c8b36efd9a8f416d060425063c4f",
+        "op_exec_espacio": "ec65557031b00bb7eaec6b9f8cd355ce76da9282d3646886e8aa8fa57909327c",
+        "fenomeno_zombie": "8c0d6e1bcd2ab8156801a115c54a8409dec272cc9e837e2f4d631ab7c621d341",
+        "fenomeno_huerfano": "3583f23b893d1a0132ffd61527b5dea745e69e3697c05869a01ef7d882b6ed32"
+      }
+    },
+    "ej7_hilos_vs_procesos": {
+      "weight": 10,
+      "feedback": "Los hilos de un mismo proceso comparten memoria virtual, globales y descriptores, pero poseen su propio Program Counter, registros de CPU y Pila (Stack). Consultar Silberschatz Cap. 4.1-4.2, Stallings Cap. 4.1 y Diapositiva U4 Slides 17-18.",
+      "hashes": {
+        "res_espacio_direcciones": "3a874f5bf000b20661ad0e476ee1cdf569ab8fb0f857d1de8a661663e451cc39",
+        "res_variables_globales": "6533e6b98cb812b60daae92a0d22550f2434bf0c95129cadce83b62110683767",
+        "res_program_counter": "cb55615aa533d49650da6a89e0e30ebb908c0ffb5244a4e3e059cc21e3740b25",
+        "res_registros_cpu": "22f5ce6b0db480ba02f5212ec9a498acfd9df330790164cbc0595ab9f038417e",
+        "res_pila_stack": "32b5b5af07cac92bd45435276864916e1426fc73ab7d28dc3eb75c656d7d6364",
+        "res_descriptores_archivos": "74e43550ba3924f4199b417fae0b19a98fa9ebc5fa799bc79172d9958076362b"
+      }
+    },
+    "ej8_mecanismos_ipc": {
+      "weight": 10,
+      "feedback": "La memoria compartida es la forma más veloz de IPC pero requiere sincronización por parte de la aplicación. Pipes anónimos son unidireccionales y FIFO operan entre no relacionados. Consultar Silberschatz Cap. 3.4-3.5 y Diapositiva U4 Slides 16, 19.",
+      "hashes": {
+        "ipc_velocidad_maxima": "4d2320b116a0d7f1d299827422351af2aac17813e5399ad0e74538c03625b2db",
+        "ipc_pipes_comunicacion": "d1d43735d275f850c7a277900fa94c2baa4b3df0898908c3a3992b11bfb3a4dc",
+        "ipc_pipes_nombrados": "2d02ca77a5e24fb59cf618afc424f73ea20f43d32024807588d121b55ed3b023",
+        "ipc_sincronizacion": "4463030cdbb8a184592c42a481e5f3774e6819037758a62307c806e0439fd485"
+      }
+    },
+    "ej9_niveles_y_criterios_planificacion": {
+      "weight": 10,
+      "feedback": "El planificador a largo plazo admite trabajos; el de medio plazo maneja swapping; el de corto plazo asigna la CPU (dispatcher). Turnaround es el tiempo total y Waiting el tiempo en cola de listos. Consultar Silberschatz Cap. 5.1-5.2 y Diapositiva U5 Slides 12, 21-23.",
+      "hashes": {
+        "sched_largo_plazo": "d77c5edfd04dcc1da20d14fde3c97006dac8cc8372161b6a13f488ca931189d3",
+        "sched_medio_plazo": "70d7a2c97d69df736681396de3131710ecd08d67e03a89a5408eff79a59db130",
+        "sched_corto_plazo": "51f1de5e339d077bdd26ee4ea8932b42962462ee32dbccee90ed0a65b63bf11a",
+        "metrica_turnaround": "4076715fae7908c64d3d3c5e08e4b8d47d1b13a16bf60ad2540c343bef220dd2",
+        "metrica_waiting": "83a0d7a8840461e5bacc9c546865ef293338ed0c1f8e66ee4de8cec6d6727e6d"
+      }
+    },
+    "ej10_simulador_planificacion_cpu": {
+      "weight": 10,
+      "feedback": "FCFS sufre del Efecto Convoy; SJF optimiza el tiempo de espera promedio; en Round Robin un quantum ínfimo genera sobrecarga de context switches; el envejecimiento (aging) previene la inanición. Consultar Silberschatz Cap. 5.3 y Diapositiva U5 Slides 24-25, 28.",
+      "hashes": {
+        "planif_fcfs_problema": "892372f0e0a41221a0eda3bc0fc129c706f690f29c934066e56c35b702519aa7",
+        "planif_sjf_optimo": "b20233068b2fe1acf9cafabeef8182351a688fa165edf14a84f1fe61eb3cbc1e",
+        "planif_rr_quantum": "26353c234a25d2f5b029017c3890e1a7143b22b28a5f895ef5c5245d4be0473c",
+        "planif_inanicion_solucion": "79d11065e19b58f041a681fa52f614064b0406cf717265f9f7a55043c4dd6f72"
+      }
+    }
+  }
+}

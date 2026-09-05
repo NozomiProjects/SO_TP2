@@ -1,0 +1,24 @@
+# =============================================================================
+# .gitignore - TRABAJOS PRÁCTICOS DE TEORÍA DE SISTEMAS OPERATIVOS (UNJu FI)
+# =============================================================================
+
+# Claves maestras y rúbricas de corrección exclusivas de la cátedra
+*_master.json
+*master*.json
+rubric_tp2_master.json
+
+# Python caches y entornos virtuales
+__pycache__/
+*.py[cod]
+*.class
+.venv/
+venv/
+env/
+
+# Archivos del sistema y temporales
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+.vscode/
+.idea/
